@@ -47,7 +47,7 @@ jobs:
         id: cache-vcpkg
         with:
           path: ${{ github.workspace }}/vcpkg_installed/
-          key: ${{ runner.os }}${{ inputs.os == 'macos-15' && '-arm' || inputs.os == 'macos-15-intel' && '-x64' || '' }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          key: ${{ runner.os }}${{ inputs.os == 'macos-15' && '-arm' || inputs.os == 'macos-15-intel' && '-x64' || '' }}-vcpkg-${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json', 'vcpkg-overlays/**') }}
           restore-keys: ${{ runner.os }}${{ inputs.os == 'macos-15' && '-arm' || inputs.os == 'macos-15-intel' && '-x64' || '' }}-vcpkg-
 
       - name: Setup vcpkg
@@ -60,6 +60,7 @@ jobs:
         env:
           VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
           VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
+          VCPKG_OVERLAY_PORTS: ${{ github.workspace }}/vcpkg-overlays
 
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
