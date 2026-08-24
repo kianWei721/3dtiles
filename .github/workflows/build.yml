@@ -66,7 +66,9 @@ jobs:
           runVcpkgInstall: ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' || inputs.package }}
           runVcpkgFormatString: ${{ inputs.os == 'macos-15' && '[`install`, `--recurse`, `--clean-after-build`, `--x-install-root`, `$[env.VCPKG_INSTALLED_DIR]`, `--triplet`, `$[env.VCPKG_DEFAULT_TRIPLET]`, `--allow-unsupported`]' || '' }}
         env:
-          VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+          # NOTE: do not re-add 'clear;x-gha' — vcpkg removed the x-gha backend, and
+          # 'clear' also disabled the default files cache, so every port was rebuilt
+          # from source on every run (~80 min). Left unset = default files cache.
           VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
 
       # Persist the ~80 min vcpkg tree even if a later step fails, so the next
